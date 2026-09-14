@@ -1,39 +1,76 @@
-# Handover — Telco CRM Lakehouse
+# Handover Document — Telco CRM Medallion Lakehouse
 
-## Verify in 5 minutes
+> A 5-minute platform verify runbook and operational checklist for incoming engineers.
 
-```powershell
-cd telco-crm-lakehouse
-py -3.12 -m pip install -r codebase\requirements.txt
-$env:PYTHONPATH="codebase"
-py -3.12 codebase\scripts\certify_public_run.py
-py -3.12 -m pytest -q
+---
+
+## ⚡ 5-Minute Verification Runbook
+
+To confirm the platform's integrity on a clean setup, execute the following commands in order:
+
+```bash
+# 1. Activate your virtual environment
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# 2. Run the Behavioral Test Suite
+python -m pytest tests/ -v
+
+# 3. Execute the E2E Medallion Pipeline and Observation Gate
+python codebase/scripts/certify_public_run.py
 ```
 
-| Pass criteria | Expected |
-|---|---|
-| Certify exit code | `0` |
-| Bronze rows | 4440 |
-| DLQ | 0 |
-| pytest | 6 / 6 |
+### ✅ Pass Criteria & Proof Points
+* **Pytest Exit Code**: `0` (asserting all 5 test scenarios pass).
+* **Certification Exit Code**: `0` (asserting all 10 quality gates pass).
+* **Database State**: A single DuckDB file is written to `data/sink/lakehouse.db` with populated tables.
+* **Evidence Output**: A unique signed JSON is added to `data/evidence/` (e.g. `run_summary_telco_full_sample_*.json`) and added to the registry metadata inside `data/evidence/run_summary_index.json`.
 
-## Docker verify
+---
 
-```powershell
-docker compose build
-docker compose run --rm pipeline
+## 🛠️ Datastore & Warehouse Inspections
+
+You can verify and query database tables using standard DuckDB CLI, Python, or standard SQL editors.
+
+### Querying via Python
+```python
+import duckdb
+
+# Connect to the local DuckDB warehouse
+conn = duckdb.connect("data/sink/lakehouse.db", read_only=True)
+
+# 1. Verify Mart Counts
+print(conn.execute("SELECT COUNT(*) FROM mart_finance_revenue").fetchone())
+
+# 2. Inspect Salted SHA-256 Masking on Legal Compliance Mart
+print(conn.execute("SELECT call_id, ani_hash, email_domain FROM mart_legal_compliance LIMIT 3").fetchdf())
+
+conn.close()
 ```
 
-## Key modules
+---
 
-| Concern | Path |
-|---|---|
-| Config | `codebase/telco_lakehouse/config/settings.py` |
-| Pipeline | `codebase/telco_lakehouse/orchestration/pipeline.py` |
-| Masking | `codebase/telco_lakehouse/governance/masking.py` |
-| Samples | `codebase/scripts/generate_samples.py` |
-| CI | `.github/workflows/ci.yml` |
+## 📂 Operational Checklist & Maintenance Tasks
 
-## Production mapping
+### Task 1: Adding a New Ingestion Schema (Bronze)
+1. Add the raw source model as a Pydantic boundary class in `codebase/telco_lakehouse/schemas/entities.py`.
+2. Register the table name and Pydantic model mapping inside `SAMPLE_FILES` in `codebase/telco_lakehouse/orchestration/pipeline.py`.
+3. Update `codebase/scripts/generate_samples.py` to support synthetic data generation for the new dataset.
+4. Rerun `python codebase/scripts/certify_public_run.py` to verify the quality gates pass.
 
-See [databricks/DATABRICKS-SERVICES.md](databricks/DATABRICKS-SERVICES.md).
+### Task 2: Modifying Masking and Governance Rules
+1. Core security functions reside inside `codebase/telco_lakehouse/governance/masking.py`.
+2. To rotate the cryptographic hashing salt, update the keyword-only parameter `salt` inside `hash_pii`.
+3. When rules are altered, ensure you update the pytest assertions inside `tests/test_pipeline.py` and execute `python -m pytest`.
+
+### Task 3: Troubleshooting Schema Failures (DLQ Inspections)
+If a source record fails ingestion boundary validation, the row is routed to `data/sink/quarantine_dlq/` as a JSON file.
+- **Inspect**: Open the quarantine file. It contains the exact `quarantined_at` timestamp, `source` CSV name, `failure_reason` (Pydantic validation trace), and the unmodified `raw_payload`.
+- **Resolution**: Patch the upstream system generating the CSV file, or evolve the Pydantic type validator inside the codebase if the drift is an approved schema evolution.
+
+---
+
+## 📈 Platform Handoff Contacts
+
+- **Lead Systems Architect**: Imran Ali Khan
+- **Primary Repo Target**: `C:\Users\imran\Documents\Projects\telco-crm-lakehouse`
+- **Documentation Core**: [`README.md`](../README.md) · [`DESIGN.md`](./DESIGN.md) · [`SOLUTION.md`](../SOLUTION.md)
