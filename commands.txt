@@ -1,0 +1,31 @@
+# Telco CRM Lakehouse — commands
+
+py -3.12 -m pip install -r codebase\requirements.txt
+$env:PYTHONPATH="codebase"
+
+# Generate samples (if missing)
+py -3.12 codebase\scripts\generate_samples.py
+
+# Full medallion run
+py -3.12 codebase\scripts\run_pipeline.py --layer all
+
+# Layer-wise (matches Docker scheduler)
+py -3.12 codebase\scripts\run_pipeline.py --layer bronze
+py -3.12 codebase\scripts\run_pipeline.py --layer silver
+py -3.12 codebase\scripts\run_pipeline.py --layer gold
+py -3.12 codebase\scripts\run_pipeline.py --layer marts
+
+# Certification + quality gates
+py -3.12 codebase\scripts\certify_public_run.py
+
+# Lint + tests
+py -3.12 -m ruff check codebase tests
+py -3.12 -m pytest -q
+
+# Docker
+docker compose build
+docker compose run --rm pipeline
+docker compose up scheduler
+
+# Bootstrap (Windows)
+.\codebase\scripts\bootstrap.ps1

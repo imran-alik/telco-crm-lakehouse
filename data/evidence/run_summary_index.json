@@ -1,0 +1,12 @@
+{
+  "runs": [
+    {
+      "run_name": "telco_full_sample",
+      "artifact": "run_summary_telco_full_sample_20260914T120643Z.json",
+      "generated_at_utc": "2026-09-14T12:06:43.969856+00:00",
+      "bronze_rows": 4440,
+      "mart_finance_rows": 105,
+      "quality_gates_passed": true
+    }
+  ]
+}

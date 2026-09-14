@@ -1,0 +1,37 @@
+services:
+  pipeline:
+    build: .
+    image: telco-crm-lakehouse:latest
+    restart: "no"
+    environment:
+      PYTHONPATH: codebase
+    env_file:
+      - path: env/.env.example
+        required: false
+    volumes:
+      - ./data/sink:/app/data/sink
+      - ./data/evidence:/app/data/evidence
+      - ./data/source:/app/data/source:ro
+    command: ["python", "codebase/scripts/certify_public_run.py"]
+
+  scheduler:
+    build: .
+    image: telco-crm-lakehouse:latest
+    restart: unless-stopped
+    environment:
+      PYTHONPATH: codebase
+      SCHEDULE_INTERVAL_SECONDS: ${SCHEDULE_INTERVAL_SECONDS:-3600}
+    env_file:
+      - path: env/.env.example
+        required: false
+    volumes:
+      - ./data/sink:/app/data/sink
+      - ./data/source:/app/data/source:ro
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while true; do
+          /app/scheduler/run_layers.sh
+          sleep "$${SCHEDULE_INTERVAL_SECONDS}"
+        done

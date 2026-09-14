@@ -1,0 +1,21 @@
+[project]
+name = "telco-crm-lakehouse"
+version = "1.0.0"
+description = "Telco CRM medallion lakehouse with dimensional marts and governed masking"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["codebase"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["codebase", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"codebase/scripts/*.py" = ["E402"]
