@@ -133,11 +133,7 @@ class TelcoLakehousePipeline:
             "fact_call",
             "fact_offer",
         ):
-            counts[t] = int(
-                self.conn.execute(f"SELECT COUNT(*) FROM {self.config.gold_prefix}{t}").fetchone()[
-                    0
-                ]
-            )
+            counts[t] = int(self.conn.execute(f"SELECT COUNT(*) FROM {self.config.gold_prefix}{t}").fetchone()[0])
         return counts
 
     def run_marts(self) -> dict[str, int]:
@@ -189,19 +185,13 @@ class TelcoLakehousePipeline:
         self.conn.execute(load_layer_sql("marts", "ml_features.sql", **prefixes))
         return {
             "mart_finance_revenue": int(
-                self.conn.execute(
-                    f"SELECT COUNT(*) FROM {self.config.mart_prefix}finance_revenue"
-                ).fetchone()[0]
+                self.conn.execute(f"SELECT COUNT(*) FROM {self.config.mart_prefix}finance_revenue").fetchone()[0]
             ),
             "mart_legal_compliance": int(
-                self.conn.execute(
-                    f"SELECT COUNT(*) FROM {self.config.mart_prefix}legal_compliance"
-                ).fetchone()[0]
+                self.conn.execute(f"SELECT COUNT(*) FROM {self.config.mart_prefix}legal_compliance").fetchone()[0]
             ),
             "mart_ml_features": int(
-                self.conn.execute(
-                    f"SELECT COUNT(*) FROM {self.config.mart_prefix}ml_features"
-                ).fetchone()[0]
+                self.conn.execute(f"SELECT COUNT(*) FROM {self.config.mart_prefix}ml_features").fetchone()[0]
             ),
         }
 

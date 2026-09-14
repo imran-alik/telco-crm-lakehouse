@@ -47,9 +47,7 @@ def compute_kpis(db_path: str, *, conn: duckdb.DuckDBPyConnection | None = None)
             conn.close()
 
 
-def evaluate_alerts(
-    kpis: dict[str, Any], *, resolution_threshold: float = 70.0
-) -> list[dict[str, Any]]:
+def evaluate_alerts(kpis: dict[str, Any], *, resolution_threshold: float = 70.0) -> list[dict[str, Any]]:
     alerts: list[dict[str, Any]] = []
     if kpis["call_resolution_pct"] < resolution_threshold:
         alerts.append(

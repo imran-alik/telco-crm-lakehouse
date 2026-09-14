@@ -21,9 +21,7 @@ def _copy_samples(tmp_path: Path) -> Path:
         import subprocess
         import sys
 
-        subprocess.check_call(
-            [sys.executable, "codebase/scripts/generate_samples.py"], cwd=Path(__file__).parents[1]
-        )
+        subprocess.check_call([sys.executable, "codebase/scripts/generate_samples.py"], cwd=Path(__file__).parents[1])
         shutil.copytree(src, dest)
     return dest
 

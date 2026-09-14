@@ -23,9 +23,7 @@ def write_run_summary(*, evidence_dir: str | Path, run_name: str, payload: dict[
             "artifact": path.name,
             "generated_at_utc": envelope["generated_at_utc"],
             "bronze_rows": payload.get("pipeline", {}).get("layer_counts", {}).get("bronze_total"),
-            "mart_finance_rows": payload.get("pipeline", {})
-            .get("marts", {})
-            .get("mart_finance_revenue"),
+            "mart_finance_rows": payload.get("pipeline", {}).get("marts", {}).get("mart_finance_revenue"),
             "quality_gates_passed": all(payload.get("quality_gates", {}).values()),
         }
     )

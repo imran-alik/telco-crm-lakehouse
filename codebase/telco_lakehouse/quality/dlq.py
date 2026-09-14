@@ -14,9 +14,7 @@ class DeadLetterQueue:
 
     def route(self, source: str, raw_data: dict[str, Any], reason: str) -> Path:
         digest = hashlib.sha256(
-            json.dumps(
-                {"source": source, "raw": raw_data, "reason": reason}, sort_keys=True, default=str
-            ).encode()
+            json.dumps({"source": source, "raw": raw_data, "reason": reason}, sort_keys=True, default=str).encode()
         ).hexdigest()[:12]
         filepath = self.dlq_dir / f"dlq_{source}_{digest}.json"
         if filepath.exists():

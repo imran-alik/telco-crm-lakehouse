@@ -17,9 +17,7 @@ from telco_lakehouse.orchestration.pipeline import TelcoLakehousePipeline
 def main() -> int:
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description="Run telco CRM lakehouse pipeline")
-    parser.add_argument(
-        "--layer", choices=["bronze", "silver", "gold", "marts", "all"], default="all"
-    )
+    parser.add_argument("--layer", choices=["bronze", "silver", "gold", "marts", "all"], default="all")
     args = parser.parse_args()
 
     config = LakehouseConfig()

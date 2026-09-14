@@ -60,9 +60,7 @@ class DeadLetterQueue:
 
     def route(self, source: str, raw_data: dict[str, Any], reason: str) -> Path:
         digest = hashlib.sha256(
-            json.dumps(
-                {"source": source, "raw": raw_data, "reason": reason}, sort_keys=True, default=str
-            ).encode()
+            json.dumps({"source": source, "raw": raw_data, "reason": reason}, sort_keys=True, default=str).encode()
         ).hexdigest()[:12]
         filepath = self.dlq_dir / f"dlq_{source}_{digest}.json"
         if filepath.exists():
@@ -178,15 +176,9 @@ Configurations are central inside `codebase/telco_lakehouse/config/settings.py` 
 # codebase/telco_lakehouse/config/settings.py
 @dataclass(frozen=True)
 class LakehouseConfig:
-    db_path: str = field(
-        default_factory=lambda: str(_repo_root() / "data" / "sink" / "lakehouse.db")
-    )
-    samples_dir: str = field(
-        default_factory=lambda: str(_repo_root() / "data" / "source" / "samples")
-    )
-    dlq_dir: str = field(
-        default_factory=lambda: str(_repo_root() / "data" / "sink" / "quarantine_dlq")
-    )
+    db_path: str = field(default_factory=lambda: str(_repo_root() / "data" / "sink" / "lakehouse.db"))
+    samples_dir: str = field(default_factory=lambda: str(_repo_root() / "data" / "source" / "samples"))
+    dlq_dir: str = field(default_factory=lambda: str(_repo_root() / "data" / "sink" / "quarantine_dlq"))
     bronze_prefix: str = "bronze_"
     silver_prefix: str = "silver_"
     gold_prefix: str = "gold_"
@@ -215,7 +207,6 @@ def hash_pii(value: str | None, *, salt: str = "telco_portfolio") -> str | None:
         return None
     digest = hashlib.sha256(f"{salt}:{value}".encode()).hexdigest()[:16]
     return f"HASH_{digest}"
-
 
 def mask_email_domain(email_domain: str | None) -> str | None:
     if not email_domain:

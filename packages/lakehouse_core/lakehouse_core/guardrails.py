@@ -11,9 +11,7 @@ class GuardrailResult:
     detail: str
 
 
-def run_guardrails(
-    *, dlq_count: int, bronze_rows: int, min_bronze: int = 100
-) -> list[GuardrailResult]:
+def run_guardrails(*, dlq_count: int, bronze_rows: int, min_bronze: int = 100) -> list[GuardrailResult]:
     return [
         GuardrailResult(
             name="dlq_zero_on_certified_sample",

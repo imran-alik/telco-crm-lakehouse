@@ -50,9 +50,7 @@ def main() -> int:
     if not list(samples.glob("*.csv")):
         import subprocess
 
-        subprocess.check_call(
-            [sys.executable, str(ROOT / "codebase" / "scripts" / "generate_samples.py")]
-        )
+        subprocess.check_call([sys.executable, str(ROOT / "codebase" / "scripts" / "generate_samples.py")])
 
     source_rows = _count_sample_rows(samples)
     _reset_sink(config)

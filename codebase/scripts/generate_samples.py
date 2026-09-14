@@ -29,40 +29,12 @@ CUSTOMER_STATUSES = ["Active", "Active", "Active", "Suspended", "Closed"]
 EMAIL_DOMAINS = ["example.com", "mail.test", "inbox.demo", "contact.sample"]
 
 FIRST_NAMES = [
-    "Alex",
-    "Jordan",
-    "Taylor",
-    "Morgan",
-    "Casey",
-    "Riley",
-    "Quinn",
-    "Avery",
-    "Blake",
-    "Cameron",
-    "Drew",
-    "Emery",
-    "Finley",
-    "Harper",
-    "Jamie",
-    "Kendall",
+    "Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Quinn", "Avery",
+    "Blake", "Cameron", "Drew", "Emery", "Finley", "Harper", "Jamie", "Kendall",
 ]
 LAST_NAMES = [
-    "Nguyen",
-    "Patel",
-    "Garcia",
-    "Kim",
-    "Chen",
-    "Williams",
-    "Brown",
-    "Davis",
-    "Martinez",
-    "Robinson",
-    "Clark",
-    "Lewis",
-    "Walker",
-    "Hall",
-    "Young",
-    "King",
+    "Nguyen", "Patel", "Garcia", "Kim", "Chen", "Williams", "Brown", "Davis",
+    "Martinez", "Robinson", "Clark", "Lewis", "Walker", "Hall", "Young", "King",
 ]
 
 TEAMS = ["Sales", "Retention", "Support", "Billing"]
@@ -71,15 +43,7 @@ SITES = ["SITE-NYC", "SITE-CHI", "SITE-DAL", "SITE-ATL", "SITE-PHX"]
 
 CHANNELS = ["voice", "voice", "voice", "chat", "callback"]
 QUEUES = ["SALES-Q", "SUPPORT-Q", "RETENTION-Q", "BILLING-Q", "TECH-Q"]
-DISPOSITIONS = [
-    "ANSWERED",
-    "ANSWERED",
-    "ANSWERED",
-    "ABANDONED",
-    "TRANSFER",
-    "VOICEMAIL",
-    "CALLBACK_SCHEDULED",
-]
+DISPOSITIONS = ["ANSWERED", "ANSWERED", "ANSWERED", "ABANDONED", "TRANSFER", "VOICEMAIL", "CALLBACK_SCHEDULED"]
 DNIS_NUMBERS = ["18005551234", "18005555678", "18885550100", "18885550200"]
 
 CAMPAIGNS = ["RETENTION_2026", "UPSELL_FIBER", "ADD_LINE_Q3", "LOYALTY_RENEW", "PREMIUM_UPGRADE"]
@@ -87,13 +51,7 @@ OFFER_IDS = ["OFR-001", "OFR-002", "OFR-003", "OFR-004", "OFR-005"]
 OFFER_RESPONSES = ["Accepted", "Declined", "No Response"]
 
 INTENT_CATEGORIES = [
-    "billing",
-    "technical",
-    "cancel",
-    "upgrade",
-    "account_change",
-    "outage",
-    "general_inquiry",
+    "billing", "technical", "cancel", "upgrade", "account_change", "outage", "general_inquiry",
 ]
 
 REGIONS = ["Northeast", "Southeast", "Midwest", "West"]
@@ -140,22 +98,14 @@ def build_agents(cfg: SampleGenerationConfig) -> list[dict[str, object]]:
     return rows
 
 
-def build_calls(
-    cfg: SampleGenerationConfig, customer_ids: list[str], agent_ids: list[str]
-) -> list[dict[str, object]]:
+def build_calls(cfg: SampleGenerationConfig, customer_ids: list[str], agent_ids: list[str]) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     base_start = datetime(2026, 8, 1, 8, 0, 0, tzinfo=UTC)
     for i in range(cfg.calls_count):
         customer_idx = i % len(customer_ids)
         disposition = DISPOSITIONS[i % len(DISPOSITIONS)]
-        agent_id = (
-            None if disposition in {"ABANDONED", "VOICEMAIL"} else agent_ids[i % len(agent_ids)]
-        )
-        talk = (
-            0
-            if disposition in {"ABANDONED", "VOICEMAIL", "CALLBACK_SCHEDULED"}
-            else 60 + (i * 13) % 900
-        )
+        agent_id = None if disposition in {"ABANDONED", "VOICEMAIL"} else agent_ids[i % len(agent_ids)]
+        talk = 0 if disposition in {"ABANDONED", "VOICEMAIL", "CALLBACK_SCHEDULED"} else 60 + (i * 13) % 900
         hold = (i * 7) % 120 if disposition == "ANSWERED" else 0
         wrap = (i * 5) % 90 if disposition in {"ANSWERED", "TRANSFER"} else 0
         record = CallCdrRecord(
@@ -201,9 +151,7 @@ def build_offers(cfg: SampleGenerationConfig, call_ids: list[str]) -> list[dict[
     return rows
 
 
-def build_intent_labels(
-    cfg: SampleGenerationConfig, call_ids: list[str]
-) -> list[dict[str, object]]:
+def build_intent_labels(cfg: SampleGenerationConfig, call_ids: list[str]) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for i, call_id in enumerate(call_ids[: cfg.intent_labels_count]):
         record = IntentLabelRecord(
@@ -216,9 +164,7 @@ def build_intent_labels(
     return rows
 
 
-def build_demographics(
-    cfg: SampleGenerationConfig, customer_ids: list[str]
-) -> list[dict[str, object]]:
+def build_demographics(cfg: SampleGenerationConfig, customer_ids: list[str]) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for i, customer_id in enumerate(customer_ids[: cfg.demographics_count]):
         record = DemographicsRecord(

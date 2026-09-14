@@ -18,7 +18,5 @@ def test_certification_script_passes() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stderr + result.stdout
-    index = json.loads(
-        (ROOT / "data" / "evidence" / "run_summary_index.json").read_text(encoding="utf-8")
-    )
+    index = json.loads((ROOT / "data" / "evidence" / "run_summary_index.json").read_text(encoding="utf-8"))
     assert index["runs"]

@@ -55,30 +55,6 @@
       "bronze_rows": 4440,
       "mart_finance_rows": 105,
       "quality_gates_passed": true
-    },
-    {
-      "run_name": "telco_full_sample",
-      "artifact": "run_summary_telco_full_sample_20260914T134203Z.json",
-      "generated_at_utc": "2026-09-14T13:42:03.556458+00:00",
-      "bronze_rows": 4440,
-      "mart_finance_rows": 105,
-      "quality_gates_passed": true
-    },
-    {
-      "run_name": "telco_full_sample",
-      "artifact": "run_summary_telco_full_sample_20260914T134256Z.json",
-      "generated_at_utc": "2026-09-14T13:42:56.229905+00:00",
-      "bronze_rows": 4440,
-      "mart_finance_rows": 105,
-      "quality_gates_passed": true
-    },
-    {
-      "run_name": "telco_full_sample",
-      "artifact": "run_summary_telco_full_sample_20260914T134420Z.json",
-      "generated_at_utc": "2026-09-14T13:44:20.853523+00:00",
-      "bronze_rows": 4440,
-      "mart_finance_rows": 105,
-      "quality_gates_passed": true
     }
   ]
 }

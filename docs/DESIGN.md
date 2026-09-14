@@ -163,15 +163,9 @@ Defined inside `codebase/telco_lakehouse/config/settings.py`, managing directory
 ```python
 @dataclass(frozen=True)
 class LakehouseConfig:
-    db_path: str = field(
-        default_factory=lambda: str(_repo_root() / "data" / "sink" / "lakehouse.db")
-    )
-    samples_dir: str = field(
-        default_factory=lambda: str(_repo_root() / "data" / "source" / "samples")
-    )
-    dlq_dir: str = field(
-        default_factory=lambda: str(_repo_root() / "data" / "sink" / "quarantine_dlq")
-    )
+    db_path: str = field(default_factory=lambda: str(_repo_root() / "data" / "sink" / "lakehouse.db"))
+    samples_dir: str = field(default_factory=lambda: str(_repo_root() / "data" / "source" / "samples"))
+    dlq_dir: str = field(default_factory=lambda: str(_repo_root() / "data" / "sink" / "quarantine_dlq"))
     bronze_prefix: str = "bronze_"
     silver_prefix: str = "silver_"
     gold_prefix: str = "gold_"
