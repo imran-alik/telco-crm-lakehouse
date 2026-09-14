@@ -74,7 +74,9 @@ def main() -> int:
     design_asks = set(re.findall(r"\*\*A(\d+)\*\*", design))
     solution_asks = set(re.findall(r"## A(\d+)", solution))
     if design_asks and design_asks != solution_asks:
-        failures.append(f"Ask ID drift DESIGN {sorted(design_asks)} vs SOLUTION {sorted(solution_asks)}")
+        failures.append(
+            f"Ask ID drift DESIGN {sorted(design_asks)} vs SOLUTION {sorted(solution_asks)}"
+        )
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8").lower()
     for token in BANNED_README:

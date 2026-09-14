@@ -42,7 +42,11 @@ conn = duckdb.connect("data/sink/lakehouse.db", read_only=True)
 print(conn.execute("SELECT COUNT(*) FROM mart_finance_revenue").fetchone())
 
 # 2. Inspect Salted SHA-256 Masking on Legal Compliance Mart
-print(conn.execute("SELECT call_id, ani_hash, email_domain FROM mart_legal_compliance LIMIT 3").fetchdf())
+print(
+    conn.execute(
+        "SELECT call_id, ani_hash, email_domain FROM mart_legal_compliance LIMIT 3"
+    ).fetchdf()
+)
 
 conn.close()
 ```

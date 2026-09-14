@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Telco Lakehouse — Certified Dashboard</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
+    h1 { margin-bottom: 0.25rem; }
+    .sub { color: #94a3b8; margin-bottom: 1.5rem; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+    .card { background: #1e293b; padding: 1rem; border-radius: 8px; }
+    .card b { display: block; font-size: 1.5rem; color: #38bdf8; }
+    #chart { margin-top: 2rem; background: #1e293b; border-radius: 8px; padding: 1rem; }
+    .gate { color: #4ade80; }
+  </style>
+</head>
+<body>
+  <h1>Telco CRM Lakehouse</h1>
+  <p class="sub">Redacted portfolio design · synthetic samples · certified run evidence</p>
+  <div class="cards">
+    <div class="card">Bronze rows<b>4440</b></div>
+    <div class="card">Call resolution<b>57.2%</b></div>
+    <div class="card">Offer conversion<b>33.38%</b></div>
+    <div class="card">Offer revenue<b>$15,667.50</b></div>
+    <div class="card">Quality gates<b class="gate">13/13</b></div>
+  </div>
+  <div id="chart"></div>
+  <script>
+    Plotly.newPlot('chart', [{
+      type: 'bar',
+      x: ['Resolution %', 'Conversion %', 'Revenue (k USD)'],
+      y: [57.2, 33.38, 15.6675],
+      marker: { color: ['#38bdf8', '#a78bfa', '#4ade80'] }
+    }], {
+      paper_bgcolor: '#1e293b',
+      plot_bgcolor: '#1e293b',
+      font: { color: '#e2e8f0' },
+      title: 'Certified KPI Snapshot'
+    }, { responsive: true });
+  </script>
+</body>
+</html>

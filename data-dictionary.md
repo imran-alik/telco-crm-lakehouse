@@ -2,6 +2,26 @@
 
 Portfolio-generated synthetic samples under `data/source/samples/`. No real PII; ANI values are SHA-256 hashes of synthetic numbers.
 
+## Entity-relationship diagrams (ERD)
+
+Linked dataset diagrams (source → silver → gold → marts), similar to the [Uber Mage project data model](https://github.com/darshilparmar/uber-data-engineering-mage-project/blob/main/data_model.jpeg):
+
+| Diagram | Description |
+|---|---|
+| **[docs/diagrams/DATA-MODEL.md](docs/diagrams/DATA-MODEL.md)** | Full ERD pack: source FKs, gold star schema, mart lineage |
+| [DESIGN.md §6](docs/DESIGN.md) | Schema registry + ASK→CODE proof per layer |
+
+### Source sample ERD (quick view)
+
+```mermaid
+erDiagram
+    CUSTOMERS_CRM ||--|| DEMOGRAPHICS : customer_id
+    CUSTOMERS_CRM ||--o{ CALLS : customer_id
+    AGENTS ||--o{ CALLS : agent_id
+    CALLS ||--|| INTENT_LABELS : call_id
+    CALLS ||--o{ OFFERS_DISPOSITION : call_id
+```
+
 ## Alignment references (public schema concepts)
 
 | Vendor / standard | Public reference | How this repo aligns |
@@ -128,3 +148,5 @@ calls (1500) ──┘ (customer_id FK)
     └── offers_disposition (800, subset)
 agents (40) ←── calls.agent_id (nullable)
 ```
+
+**Gold star schema & mart ERD:** see [docs/diagrams/DATA-MODEL.md](docs/diagrams/DATA-MODEL.md) §3–§5.

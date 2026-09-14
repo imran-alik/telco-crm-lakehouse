@@ -30,17 +30,19 @@ In production, CSV files landing in GCS/ADLS raw zones are ingested stream-by-st
 
 ```python
 # Production PySpark Auto Loader Ingest Template
-df = (spark.readStream
-      .format("cloudFiles")
-      .option("cloudFiles.format", "csv")
-      .option("cloudFiles.schemaLocation", "dbfs:/schemas/bronze_calls")
-      .option("header", "true")
-      .load("gs://telecom-raw-zone/calls/"))
+df = (
+    spark.readStream.format("cloudFiles")
+    .option("cloudFiles.format", "csv")
+    .option("cloudFiles.schemaLocation", "dbfs:/schemas/bronze_calls")
+    .option("header", "true")
+    .load("gs://telecom-raw-zone/calls/")
+)
 
-(df.writeStream
-   .format("delta")
-   .option("checkpointLocation", "dbfs:/checkpoints/bronze_calls")
-   .table("unity_catalog.telco_bronze.calls"))
+(
+    df.writeStream.format("delta")
+    .option("checkpointLocation", "dbfs:/checkpoints/bronze_calls")
+    .table("unity_catalog.telco_bronze.calls")
+)
 ```
 
 ### Silver Layer (Staging & Delta MERGE)
@@ -105,42 +107,39 @@ from airflow.providers.databricks.operators.databricks import DatabricksSubmitRu
 from datetime import datetime, timedelta
 
 default_args = {
-    'owner': 'imran_ali_khan',
-    'depends_on_past': False,
-    'start_date': datetime(2026, 9, 1),
-    'retries': 2,
-    'retry_delay': timedelta(minutes=5),
+    "owner": "imran_ali_khan",
+    "depends_on_past": False,
+    "start_date": datetime(2026, 9, 1),
+    "retries": 2,
+    "retry_delay": timedelta(minutes=5),
 }
 
 with DAG(
-    'telco_medallion_lakehouse',
+    "telco_medallion_lakehouse",
     default_args=default_args,
-    schedule_interval='@daily',
+    schedule_interval="@daily",
     catchup=False,
 ) as dag:
-
     # 1. Trigger Auto Loader stream ingestion
     ingest_bronze = DatabricksSubmitRunOperator(
-        task_id='ingest_bronze',
-        json={'notebook_task': {'notebook_path': '/Notebooks/Ingest_Bronze'}}
+        task_id="ingest_bronze",
+        json={"notebook_task": {"notebook_path": "/Notebooks/Ingest_Bronze"}},
     )
 
     # 2. Trigger Silver Normalization and Cleansing
     build_silver = DatabricksSubmitRunOperator(
-        task_id='build_silver',
-        json={'notebook_task': {'notebook_path': '/Notebooks/Build_Silver'}}
+        task_id="build_silver", json={"notebook_task": {"notebook_path": "/Notebooks/Build_Silver"}}
     )
 
     # 3. Trigger Gold Star Modeling
     build_gold = DatabricksSubmitRunOperator(
-        task_id='build_gold',
-        json={'notebook_task': {'notebook_path': '/Notebooks/Build_Gold'}}
+        task_id="build_gold", json={"notebook_task": {"notebook_path": "/Notebooks/Build_Gold"}}
     )
 
     # 4. Refresh Consumer Analytical Marts
     refresh_marts = DatabricksSubmitRunOperator(
-        task_id='refresh_marts',
-        json={'notebook_task': {'notebook_path': '/Notebooks/Refresh_Marts'}}
+        task_id="refresh_marts",
+        json={"notebook_task": {"notebook_path": "/Notebooks/Refresh_Marts"}},
     )
 
     # Linear Medallion Dependencies

@@ -1,0 +1,30 @@
+# On-prem overlay — mount host paths and tune DuckDB for bare-metal servers.
+# Usage: docker compose -f docker-compose.yml -f docker/docker-compose.onprem.yml up --build
+
+services:
+  pipeline:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        ONPREM_DB_PATH: ${ONPREM_DB_PATH:-/data/lakehouse/lakehouse.db}
+        ONPREM_SAMPLES_DIR: ${ONPREM_SAMPLES_DIR:-/data/source/samples}
+        DUCKDB_THREADS: ${DUCKDB_THREADS:-4}
+        MEMORY_LIMIT: ${MEMORY_LIMIT:-2GB}
+    environment:
+      LAKEHOUSE_DB_PATH: ${ONPREM_DB_PATH:-/data/lakehouse/lakehouse.db}
+      LAKEHOUSE_SAMPLES_DIR: ${ONPREM_SAMPLES_DIR:-/data/source/samples}
+      DUCKDB_THREADS: ${DUCKDB_THREADS:-4}
+      MEMORY_LIMIT: ${MEMORY_LIMIT:-2GB}
+    volumes:
+      - ${ONPREM_DATA_ROOT:-./data}:/data
+
+  scheduler:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      LAKEHOUSE_DB_PATH: ${ONPREM_DB_PATH:-/data/lakehouse/lakehouse.db}
+      LAKEHOUSE_SAMPLES_DIR: ${ONPREM_SAMPLES_DIR:-/data/source/samples}
+    volumes:
+      - ${ONPREM_DATA_ROOT:-./data}:/data

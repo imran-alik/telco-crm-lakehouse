@@ -41,6 +41,28 @@ Enterprise telecom networks operate across distributed, siloed customer care hub
 
 ---
 
+## 1.1 Data model & ERD (linked datasets)
+
+Entity-relationship diagrams linking all datasets across medallion layers — portfolio pattern aligned with [darshilparmar/uber-data-engineering-mage-project](https://github.com/darshilparmar/uber-data-engineering-mage-project) (`data_model.jpeg` + `architecture.jpg`).
+
+| Artifact | Contents |
+|---|---|
+| **[docs/diagrams/DATA-MODEL.md](diagrams/DATA-MODEL.md)** | Source ERD, silver 3NF, gold star schema, mart ERD, lineage flowchart |
+| [data-dictionary.md](../data-dictionary.md) | Column-level definitions + inline source ERD |
+| [analytics_query.sql](../analytics_query.sql) | KPI queries over gold/mart joins |
+
+```mermaid
+erDiagram
+    GOLD_DIM_CUSTOMER ||--o{ GOLD_FACT_CALL : customer_key
+    GOLD_DIM_AGENT ||--o{ GOLD_FACT_CALL : agent_key
+    GOLD_DIM_DATE ||--o{ GOLD_FACT_CALL : date_key
+    GOLD_FACT_CALL ||--o{ GOLD_FACT_OFFER : call_id
+```
+
+Full dimension list and mart relationships: [DATA-MODEL.md §3–§4](diagrams/DATA-MODEL.md#3-gold-star-schema-erd).
+
+---
+
 ## 2. Sources and Sinks Registry
 
 | System Name | Type | Physical Path / Target | Grain | Write Mode | Idempotency Key |
@@ -141,9 +163,15 @@ Defined inside `codebase/telco_lakehouse/config/settings.py`, managing directory
 ```python
 @dataclass(frozen=True)
 class LakehouseConfig:
-    db_path: str = field(default_factory=lambda: str(_repo_root() / "data" / "sink" / "lakehouse.db"))
-    samples_dir: str = field(default_factory=lambda: str(_repo_root() / "data" / "source" / "samples"))
-    dlq_dir: str = field(default_factory=lambda: str(_repo_root() / "data" / "sink" / "quarantine_dlq"))
+    db_path: str = field(
+        default_factory=lambda: str(_repo_root() / "data" / "sink" / "lakehouse.db")
+    )
+    samples_dir: str = field(
+        default_factory=lambda: str(_repo_root() / "data" / "source" / "samples")
+    )
+    dlq_dir: str = field(
+        default_factory=lambda: str(_repo_root() / "data" / "sink" / "quarantine_dlq")
+    )
     bronze_prefix: str = "bronze_"
     silver_prefix: str = "silver_"
     gold_prefix: str = "gold_"

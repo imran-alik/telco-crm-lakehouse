@@ -1,9 +1,14 @@
 # Telco CRM Lakehouse (Databricks / GCP)
 
+> **Compliance:** This is a **redacted portfolio design** of private production telco lakehouse work. Full-scale sharing of underlying private repos is **prohibited under compliance** — see [COMPLIANCE.md](COMPLIANCE.md). All data is synthetic.
+
 Medallion lakehouse case study: ingest synthetic telco CRM and contact-center datasets, normalize to 3NF silver, publish star-schema gold, and deliver governed marts for **finance**, **legal**, and **ML** consumers. Local DuckDB emulator with **Databricks Unity Catalog + Airflow** production mapping.
+
+Portfolio presentation style inspired by [Rao-Anas-Riaz](https://github.com/Rao-Anas-Riaz) — this repo is a more evolved DE/medallion implementation, not a copy.
 
 | Doc | Purpose |
 |---|---|
+| [docs/diagrams/DATA-MODEL.md](docs/diagrams/DATA-MODEL.md) | **ERD diagrams** — source, gold star schema, marts (Uber-style data model) |
 | [docs/DESIGN.md](docs/DESIGN.md) | Architecture, schemas, failure matrix, lineage |
 | [docs/HANDOVER.md](docs/HANDOVER.md) | Run / verify / handover checklist |
 | [docs/databricks/DATABRICKS-SERVICES.md](docs/databricks/DATABRICKS-SERVICES.md) | Databricks + orchestration mapping |
@@ -79,6 +84,32 @@ docker compose up scheduler
 ```
 
 Pass = certify exits **0**. Runbook: [codebase/scripts/HOW-TO-EXECUTE.md](codebase/scripts/HOW-TO-EXECUTE.md)
+
+---
+
+## Repository layout (medallion + packages)
+
+```
+medallion/
+  bronze/python/          # CSV ingest (pipeline)
+  silver/sql/             # 3NF entity SQL
+  gold/sql/               # Star schema SQL
+  marts/sql/              # Finance + ML mart SQL
+packages/lakehouse_core/  # Freshness, health, guardrails, alerts
+codebase/core/            # Re-exports for pipeline scripts
+visualizations/           # Interactive HTML dashboard (Plotly CDN)
+docker/docker-compose.onprem.yml
+env/.env.example          # Protected credential placeholders
+```
+
+**Visualizations:** after certify, run `py -3.12 visualizations/build_dashboard.py` → [data/evidence/dashboard.html](data/evidence/dashboard.html)
+
+**On-prem Docker:**
+
+```powershell
+copy env\.env.example env\.env
+docker compose -f docker-compose.yml -f docker/docker-compose.onprem.yml up --build
+```
 
 ---
 

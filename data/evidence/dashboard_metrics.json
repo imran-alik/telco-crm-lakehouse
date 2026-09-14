@@ -1,0 +1,29 @@
+{
+  "kpis": {
+    "total_calls": 1500,
+    "call_resolution_pct": 57.2,
+    "offer_conversion_pct": 33.38,
+    "total_offer_revenue_usd": 15667.5,
+    "avg_agent_hours_per_call": 0.1213
+  },
+  "quality_gates": {
+    "bronze_ingested": true,
+    "silver_built": true,
+    "gold_built": true,
+    "finance_mart_built": true,
+    "legal_mart_built": true,
+    "ml_mart_built": true,
+    "dlq_zero_on_sample": true,
+    "idempotent_replay_stable": true,
+    "call_resolution_kpi_computed": true,
+    "offer_revenue_computed": true,
+    "guardrails_passed": true,
+    "failure_checks_passed": true,
+    "health_ok": true
+  },
+  "layer_counts": {
+    "bronze_total": 4440,
+    "silver_total": 4140,
+    "gold_total": 2665
+  }
+}
