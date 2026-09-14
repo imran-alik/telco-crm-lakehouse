@@ -4,8 +4,6 @@
 
 Medallion lakehouse case study: ingest synthetic telco CRM and contact-center datasets, normalize to 3NF silver, publish star-schema gold, and deliver governed marts for **finance**, **legal**, and **ML** consumers. Local DuckDB emulator with **Databricks Unity Catalog + Airflow** production mapping.
 
-Portfolio presentation style inspired by [Rao-Anas-Riaz](https://github.com/Rao-Anas-Riaz) — this repo is a more evolved DE/medallion implementation, not a copy.
-
 | Doc | Purpose |
 |---|---|
 | [docs/diagrams/DATA-MODEL.md](docs/diagrams/DATA-MODEL.md) | **ERD diagrams** — source, gold star schema, marts (Uber-style data model) |
